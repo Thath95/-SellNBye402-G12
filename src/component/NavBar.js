@@ -2,9 +2,41 @@ import React, {Component} from 'react';
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import NavDropdown from "react-bootstrap/NavDropdown";
+import NavLink from "react-bootstrap/NavLink";
+import swal from "sweetalert";
 
 export default class NavBar extends Component {
+    constructor(props) {
+        super(props)
+        this.onLogOutClicked = this.onLogOutClicked.bind(this);
+    }
+
+    onLogOutClicked() {
+        let fName = localStorage.getItem('fName');
+        localStorage.removeItem('fName');
+        localStorage.removeItem('lName');
+        localStorage.removeItem('email');
+        localStorage.removeItem('isLogged');
+
+        swal("See you Soon " + fName, 'You are Successfully logged out !', "success").then(() => {
+            window.location.href = 'http://localhost:3000';
+        })
+    }
+
     render() {
+        let nameNavLink = () => {
+            if (localStorage.getItem('fName')) {
+                return <Nav>
+                    <Nav.Link href="/home">{localStorage.getItem('fName')}</Nav.Link>
+                    <Nav.Link eventKey={2} onClick={this.onLogOutClicked}>Logout</Nav.Link>
+                </Nav>
+            } else {
+                return <Nav>
+                    <NavLink href="/">Login</NavLink>
+                </Nav>
+            }
+        };
+
         return <div>
 
             <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
@@ -22,12 +54,7 @@ export default class NavBar extends Component {
                             {/*<NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>*/}
                         </NavDropdown>
                     </Nav>
-                    <Nav>
-                        <Nav.Link href="#deets">Login</Nav.Link>
-                        <Nav.Link eventKey={2} href="#memes">
-                            Register
-                        </Nav.Link>
-                    </Nav>
+                    {nameNavLink()}
                 </Navbar.Collapse>
             </Navbar>;
         </div>
